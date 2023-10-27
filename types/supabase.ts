@@ -39,30 +39,57 @@ export interface Database {
 			events: {
 				Row: {
 					created_at: string;
-					date: string;
 					description: string;
+					end_date: string;
 					id: number;
 					image: string;
 					location: string;
+					start_date: string;
 					title: string;
+					user_info: string | null;
 				};
 				Insert: {
 					created_at?: string;
-					date?: string;
-					description?: string;
+					description: string;
+					end_date: string;
 					id?: number;
-					image?: string;
-					location?: string;
-					title?: string;
+					image: string;
+					location: string;
+					start_date: string;
+					title: string;
+					user_info?: string | null;
 				};
 				Update: {
 					created_at?: string;
-					date?: string;
 					description?: string;
+					end_date?: string;
 					id?: number;
 					image?: string;
 					location?: string;
+					start_date?: string;
 					title?: string;
+					user_info?: string | null;
+				};
+				Relationships: [];
+			};
+			users: {
+				Row: {
+					created_at: string;
+					id: number;
+					user_id: string | null;
+					user_name: string;
+				};
+				Insert: {
+					created_at?: string;
+					id?: number;
+					user_id?: string | null;
+					user_name: string;
+				};
+				Update: {
+					created_at?: string;
+					id?: number;
+					user_id?: string | null;
+					user_name?: string;
 				};
 				Relationships: [];
 			};

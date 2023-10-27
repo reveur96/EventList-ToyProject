@@ -3,7 +3,7 @@
 import { Link } from 'react-router-dom';
 
 const EventItem = ({ event }: any) => {
-	const formattedDate = new Date(event.date).toLocaleDateString('ko', {
+	const formattedDate = new Date(event.start_date).toLocaleDateString('ko', {
 		day: 'numeric',
 		month: 'short',
 		year: 'numeric',

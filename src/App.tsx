@@ -1,30 +1,37 @@
 /** @format */
 
-import {
-	Navigate,
-	RouterProvider,
-	createBrowserRouter,
-} from 'react-router-dom';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { QueryClient } from '@tanstack/react-query';
 
-import EventsPage from '../src/components/Events/EventsPage';
-import EventDetailPage from './components/Events/EventDetailPage';
+import CreateEventPage from './pages/CreateEventPage';
+import EditEvent from './pages/EditEventPage';
+import EventDetailPage from './pages/EventDetailPage';
+import EventsPage from './pages/EventsPage';
+import MainPage from './pages/MainPage';
 
-export const queryClient = new QueryClient();
+import { queryClient } from './util/http';
 
 const router = createBrowserRouter([
 	{
 		path: '/',
-		element: <Navigate to='/events' />,
+		element: <MainPage />,
 	},
 	{
 		path: '/events',
 		element: <EventsPage />,
 	},
 	{
+		path: '/newEvent',
+		element: <CreateEventPage />,
+	},
+	{
 		path: '/events/:id',
 		element: <EventDetailPage />,
+		children: [],
+	},
+	{
+		path: '/events/:id/edit',
+		element: <EditEvent />,
 	},
 ]);
 
