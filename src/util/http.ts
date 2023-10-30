@@ -28,3 +28,16 @@ export async function fetchSelectedEvent(id: string) {
 
 	return events;
 }
+
+export async function deleteEvent(id: number) {
+  const { data: successMessage, error: getError } = await supabase
+		.from('events')
+		.delete()
+		.eq('id', id);
+    
+	if (getError) {
+		throw getError;
+	}
+
+	return successMessage;
+}

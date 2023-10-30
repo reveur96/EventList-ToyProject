@@ -8,7 +8,8 @@ export default function EventForm({ inputData, onSubmit }: any) {
 
 	if (inputData) {
 		inputDataObj = inputData[0];
-	}
+  }
+  
 	function handleSubmit(event: any) {
 		event.preventDefault();
 
