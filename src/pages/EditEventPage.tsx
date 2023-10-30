@@ -1,14 +1,14 @@
 /** @format */
 
-import { useParams, useSubmit } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery, useMutation } from '@tanstack/react-query';
 
-import { fetchSelectedEvent } from '../util/http';
+import { fetchSelectedEvent, updateEvent } from '../util/http';
 import EventForm from '../components/Events/EventForm';
 
 export default function EditEventPage() {
-	const submit = useSubmit();
 	const params = useParams();
+	const navigate = useNavigate();
 
 	const { data } = useQuery({
 		queryKey: ['events', params.id],
@@ -16,8 +16,18 @@ export default function EditEventPage() {
 		staleTime: 10000,
 	});
 
-	function handleSubmit({ formData }: any) {
-		submit(formData, { method: 'PUT' });
+	const { mutate } = useMutation({
+		mutationFn: updateEvent,
+		onSuccess: (data: any) => {
+			navigate(`/events/${data.id}`);
+		},
+		onError: (error: Error) => {
+			throw error;
+		},
+	});
+
+	function handleSubmit(FormData: any) {
+		mutate(FormData);
 	}
 
 	return (

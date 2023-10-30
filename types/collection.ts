@@ -8,3 +8,4 @@ export type Enums<T extends keyof Database['public']['Enums']> =
 	Database['public']['Enums'][T];
 
 export type Events = Database['public']['Tables']['events']['Row'];
+

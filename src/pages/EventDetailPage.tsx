@@ -59,12 +59,7 @@ export default function EventDetails() {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const navigate = useNavigate();
 
-	const {
-		mutate,
-		isPending: isPendingDeletion,
-		isError: isErrorDeleting,
-		error: deleteError,
-	} = useMutation({
+	const { mutate } = useMutation({
 		mutationFn: deleteEvent,
 		onSuccess: () => {
 			queryClient.invalidateQueries({
@@ -157,25 +152,23 @@ export default function EventDetails() {
 						<div
 							key={eventData?.id}
 							className='flex flex-col items-start justify-between p-2'>
-							<div className='group relative'>
-								<h2 className='text-3xl font-bold tracking-tight text-gray-800 sm:text-2xl mb-4'>
-									{eventData?.title}
-								</h2>
-								<p className='text-base font-medium leading-6 text-gray-600 sm:text-base'>
-									<span className='font-semibold pr-2'>행사 날짜 |</span>
-									{eventStartDate} ~ {eventEndDate}
-								</p>
-								<p className='mt-1 text-base font-medium leading-6 text-gray-600 sm:text-base'>
-									<span className='font-semibold pr-2'>행사 장소 |</span>
-									{eventData?.location}
-								</p>
-								<p className='mt-3 text-base font-semibold leading-6 text-gray-600 sm:text-base'>
-									행사 소개
-								</p>
-								<p className='mt-1 text-base leading-6 text-gray-400 sm:text-sm text-justify'>
-									{eventData?.description}
-								</p>
-							</div>
+							<h2 className='text-3xl font-bold tracking-tight text-gray-800 sm:text-2xl mb-4'>
+								{eventData?.title}
+							</h2>
+							<p className='text-base font-medium leading-6 text-gray-600 sm:text-base'>
+								<span className='font-semibold pr-2'>행사 날짜 |</span>
+								{eventStartDate} ~ {eventEndDate}
+							</p>
+							<p className='mt-1 text-base font-medium leading-6 text-gray-600 sm:text-base'>
+								<span className='font-semibold pr-2'>행사 장소 |</span>
+								{eventData?.location}
+							</p>
+							<p className='mt-3 text-base font-semibold leading-6 text-gray-600 sm:text-base'>
+								행사 소개
+							</p>
+							<p className='w-full break-words  mt-1 text-base leading-6 text-gray-400 sm:text-sm text-justify '>
+								{eventData?.description}
+							</p>
 						</div>
 					</article>
 				</div>

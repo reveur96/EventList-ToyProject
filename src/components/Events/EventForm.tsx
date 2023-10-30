@@ -8,14 +8,14 @@ export default function EventForm({ inputData, onSubmit }: any) {
 
 	if (inputData) {
 		inputDataObj = inputData[0];
-  }
-  
+	}
+
 	function handleSubmit(event: any) {
 		event.preventDefault();
 
 		const formData = new FormData(event.target);
 		const data = Object.fromEntries(formData);
-
+		console.log('form', data);
 		onSubmit({ ...data });
 	}
 
@@ -55,10 +55,18 @@ export default function EventForm({ inputData, onSubmit }: any) {
 				</p>
 			</div>
 			<form
-				action='#'
-				method='POST'
 				onSubmit={handleSubmit}
 				className='mx-auto mt-16 max-w-xl sm:mt-20'>
+				<input
+					type='hidden'
+					name='id'
+					value={inputDataObj?.id ?? ''}
+				/>
+				<input
+					type='hidden'
+					name='created_at'
+					value={inputDataObj?.created_at ?? ''}
+				/>
 				<div className='grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2'>
 					<div className='sm:col-span-2'>
 						<label
@@ -72,6 +80,7 @@ export default function EventForm({ inputData, onSubmit }: any) {
 								id='title'
 								name='title'
 								defaultValue={inputDataObj?.title ?? ''}
+								required
 								className='block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
 							/>
 						</div>
@@ -85,9 +94,10 @@ export default function EventForm({ inputData, onSubmit }: any) {
 						<div className='mt-2.5'>
 							<input
 								type='datetime-local'
-								name='start-date'
+								name='start_date'
 								id='start-date'
 								defaultValue={eventStartDate ?? ''}
+								required
 								className='block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
 							/>
 						</div>
@@ -102,9 +112,10 @@ export default function EventForm({ inputData, onSubmit }: any) {
 						<div className='mt-2.5'>
 							<input
 								type='datetime-local'
-								name='end-date'
+								name='end_date'
 								id='end-date'
 								defaultValue={eventEndDate ?? ''}
+								required
 								className='block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
 							/>
 						</div>
@@ -122,6 +133,7 @@ export default function EventForm({ inputData, onSubmit }: any) {
 								name='location'
 								id='location'
 								defaultValue={inputDataObj?.location ?? ''}
+								required
 								className='block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
 							/>
 						</div>
@@ -138,6 +150,7 @@ export default function EventForm({ inputData, onSubmit }: any) {
 								id='description'
 								name='description'
 								defaultValue={inputDataObj?.description ?? ''}
+								required
 								className='block w-full h-52 rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 resize-none '
 							/>
 						</div>
