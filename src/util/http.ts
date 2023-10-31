@@ -29,17 +29,18 @@ export async function fetchSelectedEvent(id: string) {
 	return events;
 }
 
-export async function deleteEvent(id: number) {
-	const { data: successMessage, error: getError } = await supabase
+export async function createEvent(formData: any) {
+	const { error: error, status: status } = await supabase
 		.from('events')
-		.delete()
-		.eq('id', id);
+		.upsert([formData]);
 
-	if (getError) {
-		throw getError;
+	if (error) {
+		throw new Error(error.message);
 	}
 
-	return successMessage;
+	if (status === 204) {
+		return formData;
+	}
 }
 
 export async function updateEvent(formData: any) {
@@ -57,16 +58,30 @@ export async function updateEvent(formData: any) {
 	}
 }
 
-export async function createEvent(formData: any) {
-	const { error: error, status: status } = await supabase
+export async function deleteEvent(id: number) {
+	const { data: successMessage, error: getError } = await supabase
 		.from('events')
-		.upsert([formData]);
+		.delete()
+		.eq('id', id);
 
-	if (error) {
-		throw new Error(error.message);
+	if (getError) {
+		throw getError;
 	}
 
-	if (status === 204) {
-		return formData;
-	}
+	return successMessage;
 }
+
+export async function searchedEvent(searchTerm:string) {
+	const { data: events, error: getError } = await supabase
+		.from('events')
+		.select()
+		.ilike('title', `%${searchTerm}%`);
+
+	if (getError) {
+		throw getError;
+	}
+
+	return events;
+}
+
+
