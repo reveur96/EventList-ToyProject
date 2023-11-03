@@ -1,35 +1,55 @@
 /** @format */
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import EventItem from './EventItem';
 
 import { searchedEvent } from '../../util/http';
+import LoadingIndicator from '../Ui/Loadingindicator';
 
 export default function FindEventSection() {
 	const searchElement = useRef<HTMLInputElement>(null);
 	const [searchTerm, setSearchTerm] = useState<undefined | string>();
 	const [content, setContent] = useState<JSX.Element | null>(null);
 
-	const { data } = useQuery({
+	const { data, status } = useQuery({
 		queryKey: ['events', { search: searchTerm }],
 		queryFn: () => searchedEvent(searchTerm as string),
 		enabled: searchTerm !== undefined,
 	});
 
+	let dataStatus = (
+		<p className='pt-3'>Please enter a search term to find events.</p>
+	);
+
+	if (status === 'pending' && searchTerm) {
+		dataStatus = <LoadingIndicator />;
+	}
+
 	if (data && !content) {
 		const eventsList = (
 			<ul className='mt-6 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 xl:gap-x-8'>
-				{data.map((event: any) => (
+				{data.map((event) => (
 					<li
 						className='aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-300 xl:aspect-h-8 xl:aspect-w-7 p-3'
-						key={event.id}>
+						key={event?.id}>
 						<EventItem event={event} />
 					</li>
 				))}
 			</ul>
 		);
-		setContent(eventsList);
+
+		if (data?.length === 0) {
+			setContent(
+				<p className='pt-3'>can not find any event. please check again.</p>
+			);
+		} else {
+			setContent(eventsList);
+		}
+	}
+
+	if (status === 'error') {
+		dataStatus = <p className='pt-3'>Failed to fetch events.</p>;
 	}
 
 	function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -66,7 +86,7 @@ export default function FindEventSection() {
 					</button>
 				</form>
 			</header>
-			{content || <p>Please enter a search term to find events.</p>}
+			{content || dataStatus}
 		</section>
 	);
 }
