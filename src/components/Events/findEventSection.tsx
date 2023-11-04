@@ -1,48 +1,62 @@
 /** @format */
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import EventItem from './EventItem';
-import supabase from '../../lib/supabase-client';
+
+import { searchedEvent } from '../../util/http';
+import LoadingIndicator from '../Ui/Loadingindicator';
 
 export default function FindEventSection() {
 	const searchElement = useRef<HTMLInputElement>(null);
 	const [searchTerm, setSearchTerm] = useState<undefined | string>();
 	const [content, setContent] = useState<JSX.Element | null>(null);
 
-	const fetcher = async () => {
-		const { data, error } = await supabase
-			.from('events')
-			.select()
-			.like('title', `%${searchTerm}%`);
+	const { data, status } = useQuery({
+		queryKey: ['events', { search: searchTerm }],
+		queryFn: () => searchedEvent(searchTerm as string),
+		enabled: searchTerm !== undefined,
+	});
 
-		if (error) {
-			console.log(error);
-		}
+	let dataStatus = (
+		<p className='pt-3'>Please enter a search term to find events.</p>
+	);
 
-		if (data) {
-			const eventsList = (
-				<ul className='mt-6 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 xl:gap-x-8'>
-					{data.map((event) => (
-						<li
-							className='aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-300 xl:aspect-h-8 xl:aspect-w-7 p-3'
-							key={event.id}>
-							<EventItem event={event} />
-						</li>
-					))}
-				</ul>
+	if (status === 'pending' && searchTerm) {
+		dataStatus = <LoadingIndicator />;
+	}
+
+	if (data && !content) {
+		const eventsList = (
+			<ul className='mt-6 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-6 xl:gap-x-8'>
+				{data.map((event) => (
+					<li
+						className='aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-300 xl:aspect-h-8 xl:aspect-w-7 p-3'
+						key={event?.id}>
+						<EventItem event={event} />
+					</li>
+				))}
+			</ul>
+		);
+
+		if (data?.length === 0) {
+			setContent(
+				<p className='pt-3'>can not find any event. please check again.</p>
 			);
+		} else {
 			setContent(eventsList);
 		}
-	};
+	}
+
+	if (status === 'error') {
+		dataStatus = <p className='pt-3'>Failed to fetch events.</p>;
+	}
 
 	function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		setSearchTerm(searchElement.current?.value);
+		setContent(null);
 	}
-
-	useEffect(() => {
-		fetcher();
-	}, [searchTerm]);
 
 	return (
 		<section className='mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-14 lg:max-w-7xl lg:px-8'>
@@ -72,7 +86,7 @@ export default function FindEventSection() {
 					</button>
 				</form>
 			</header>
-			{content || <p>Please enter a search term to find events.</p>}
+			{content || dataStatus}
 		</section>
 	);
 }
